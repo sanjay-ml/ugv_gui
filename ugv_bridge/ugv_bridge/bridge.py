@@ -6,10 +6,14 @@ import rclpy
 from rclpy.node import Node
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
+import sqlite3
 
 
 _latest = {"x": None, "y": None, "theta": None, "timestamp": None}
 _lock = threading.Lock()
+db = sqlite3.connect("ugv.db", check_same_thread=False)
+cursor = db.cursor()
+
 
 app = FastAPI(title="UGV Bridge")
 node=None
@@ -40,6 +44,24 @@ def cmd_vel(vx: float=0.0, wz:float=0.0):
     t.angular.z=wz
     node.pub.publish(t)
     return{"sent":True}
+
+@app.post("/add_user")
+def add_user(name: str, email: str):
+    cursor.execute(
+        "INSERT INTO users (name, email) VALUES (?, ?)",
+        (name, email)
+    )
+    db.commit()
+    return {"added": True}
+
+@app.get("/users")
+def list_users():
+    cursor.execute("SELECT id, name, email FROM users")
+    rows = cursor.fetchall()
+    return [
+        {"id": r[0], "name": r[1], "email": r[2]}
+        for r in rows
+    ]
 
 
 def _start_api():
