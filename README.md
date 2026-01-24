@@ -9,5 +9,5 @@ The code demonstrates:
 - Running FastAPI and ROS2 concurrently using threads
 - Sharing state safely between ROS callbacks and web handlers
 
-This project is **not production-ready** and is intentionally minimal.  
-It is meant to serve as a **base to build upon** for robotics dashboards, ROS2–web bridges, and API-driven robot control systems.
+This project is **made to test creating nodes** and is intentionally minimal.  
+It is meant to serve as a **base to build upon** for the real work.
